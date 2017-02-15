@@ -1,7 +1,9 @@
 import requests, sys, time
 
-check_url = 'https://gitlab.com/itsuwari/check_txt/raw/master/Works.txt'
+
+#check_url = 'https://gitlab.com/itsuwari/check_txt/raw/master/Works.txt'
 #check_url = 'https://raw.githubusercontent.com/itsuwari/SocksProxyChecker/master/am_I_working.txt'
+check_url = 'https://developer.akamai.com/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css'
 
 class ProgressBar:
     def __init__(self, count=0, total=0, width=50):
@@ -23,7 +25,7 @@ class ProgressBar:
 
 
 
-def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, timeout=10, speed_timeout=3):
+def test_proxy(proxies, country_filter=False, isp_filter=False, speed_filter=2, timeout=10, speed_timeout=3):
     bar = ProgressBar(total=len(proxies))
     working = []
     for proxy in proxies:
@@ -43,7 +45,7 @@ def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, ti
             if isp_filter:
                 if not isp in isp_filter:
                     continue
-            if requests.get(check_url, timeout=timeout, proxies=socks).text == 'Works':
+            if requests.get(check_url, timeout=timeout, proxies=socks).elapsed.total_seconds() <= 2:
                 open(out_file, 'a').write('%s\n' % proxy)
                 working.append(proxy)
                 bar.log('%s is working!' % proxy)
@@ -94,4 +96,4 @@ with open(in_file) as f:
 proxies = [x.strip() for x in proxies]
 
 us_isp = ['Google', 'Apple', 'Akamai Technologies', 'Amazon Technologies', 'Microsoft Corp']
-test_proxy(proxies, ['US'], us_isp, speed_filter=20, speed_timeout=2)
+test_proxy(proxies, ['US'], speed_filter=50, speed_timeout=2)
