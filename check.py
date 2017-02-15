@@ -1,9 +1,9 @@
 import requests, sys, time
 
 
-#check_url = 'https://gitlab.com/itsuwari/check_txt/raw/master/Works.txt'
+check_url = 'https://gitlab.com/itsuwari/check_txt/raw/master/Works.txt'
 #check_url = 'https://raw.githubusercontent.com/itsuwari/SocksProxyChecker/master/am_I_working.txt'
-check_url = 'http://developer.akamai.com/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css'
+#check_url = 'http://developer.akamai.com/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css'
 
 class ProgressBar:
     def __init__(self, count=0, total=0, width=50):
@@ -45,7 +45,7 @@ def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, ti
             if not isp_filter is None:
                 if not isp in isp_filter:
                     continue
-            if requests.get(check_url, timeout=timeout, proxies=socks).elapsed.total_seconds() <= 10:
+            if requests.get(check_url, timeout=timeout, proxies=socks).text == 'Works':
                 working.append(proxy)
                 bar.log('%s is working!' % proxy)
                 speed = speedtest([proxy], timeout=speed_timeout)
