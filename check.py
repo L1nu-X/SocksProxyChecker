@@ -25,7 +25,7 @@ class ProgressBar:
 
 
 
-def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, timeout=10, speed_timeout=3):
+def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, timeout=15, speed_timeout=40):
     bar = ProgressBar(total=len(proxies))
     working = []
     for proxy in proxies:
@@ -33,19 +33,19 @@ def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, ti
                 'http': 'socks5://%s' % proxy,
                 'https': 'socks5://%s' % proxy
         }
+        ip_info = requests.get('http://ip-api.com/json/%s' % proxy.split(':')[0], timeout=5).json()
+        country_code = ip_info['countryCode']
+        isp = ip_info['isp']
+        bar.log('Country: %s ISP: %s' % (country_code, isp))
+        time.sleep(1)
         try:
-            ip_info = requests.get('http://ip-api.com/json/%s' % proxy.split(':')[0], timeout=5).json()
-            country_code = ip_info['countryCode']
-            isp = ip_info['isp']
-            bar.log('Country: %s ISP: %s' % (country_code, isp))
-            time.sleep(1)
             if not country_filter is None:
                 if not country_code in country_filter:
                     continue
             if not isp_filter is None:
                 if not isp in isp_filter:
                     continue
-            if requests.get(check_url, timeout=timeout, proxies=socks).elapsed.total_seconds() <= 2:
+            if requests.get(check_url, timeout=timeout, proxies=socks).elapsed.total_seconds() <= 10:
                 working.append(proxy)
                 bar.log('%s is working!' % proxy)
                 speed = speedtest([proxy], timeout=speed_timeout)
