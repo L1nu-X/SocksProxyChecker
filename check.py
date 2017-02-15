@@ -1,4 +1,4 @@
-import requests, sys
+import requests, sys, time
 
 check_url = 'https://coding.net/u/Katsue/p/check/git/raw/master/working.txt'
 #check_url = 'https://raw.githubusercontent.com/itsuwari/SocksProxyChecker/master/am_I_working.txt'
@@ -51,6 +51,7 @@ def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, ti
         except Exception:
             bar.log('Oops, not working')
             bar.move(1)
+    time.sleep(1)
     return working
 
 def speedtest(proxies, filter=5, file='http://repos.lax-noc.com/speedtests/10mb.bin', timeout=10):
