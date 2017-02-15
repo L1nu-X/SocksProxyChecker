@@ -100,4 +100,4 @@ with open(in_file) as f:
 proxies = [x.strip() for x in proxies]
 
 us_isp = ['Google', 'Apple', 'Akamai Technologies', 'Amazon Technologies', 'Microsoft Corp']
-test_proxy(proxies, country_filter=['US'], speed_filter=30, speed_timeout=2)
+test_proxy(proxies, country_filter=['US'], speed_filter=10, speed_timeout=2)
