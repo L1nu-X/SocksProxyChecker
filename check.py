@@ -35,6 +35,8 @@ def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, ti
             ip_info = requests.get('http://ip-api.com/json/%s' % proxy.split(':')[0], timeout=5).json()
             country_code = ip_info['countryCode']
             isp = ip_info['isp']
+            print('Country: %s ISP: %s' % (country_code, isp))
+            time.sleep(1)
             if country_filter:
                 if not country_code in country_filter:
                     continue
@@ -51,7 +53,7 @@ def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, ti
         except Exception:
             bar.log('Oops, not working')
             bar.move(1)
-    time.sleep(1)
+
     return working
 
 def speedtest(proxies, filter=5, file='http://repos.lax-noc.com/speedtests/10mb.bin', timeout=10):
