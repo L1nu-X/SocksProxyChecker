@@ -1,4 +1,4 @@
-import requests, sys, time
+import requests, sys, time, os
 
 
 check_url = 'https://gitlab.com/itsuwari/check_txt/raw/master/Works.txt'
@@ -25,7 +25,7 @@ class ProgressBar:
 
 
 
-def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, timeout=15, speed_timeout=40):
+def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2.0, timeout=15, speed_timeout=40):
     bar = ProgressBar(total=len(proxies))
     working = []
     for proxy in proxies:
@@ -45,6 +45,7 @@ def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, ti
             if not isp_filter is None:
                 if not isp in isp_filter:
                     continue
+            print(os.system("ping -c 1 " + str(proxy.split(':')[0])))
             if requests.get(check_url, timeout=timeout, proxies=socks).text == 'Works':
                 working.append(proxy)
                 bar.log('%s is working!' % proxy)
@@ -89,7 +90,7 @@ with open(in_file) as f:
     proxies = f.readlines()
 proxies = [x.strip() for x in proxies]
 
-test_proxy(proxies, asia, speed_filter=5)
+test_proxy(proxies, asia, speed_filter=0.2)
 
 in_file = 'us.txt'
 out_file = 'us_out.txt'
