@@ -32,7 +32,7 @@ def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, ti
                 'https': 'socks5://%s' % proxy
         }
         try:
-            ip_info = requests.get('http://ip-api.com/json/%s' % proxy.split(':')[0]).json()
+            ip_info = requests.get('http://ip-api.com/json/%s' % proxy.split(':')[0], timeout=5).json()
             country_code = ip_info['countryCode']
             isp = ip_info['isp']
             if country_filter:
