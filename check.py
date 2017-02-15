@@ -1,7 +1,7 @@
 import requests, sys
 
-#check_url = 'https://coding.net/u/Katsue/p/check/git/raw/master/working.txt'
-check_url = 'https://raw.githubusercontent.com/itsuwari/SocksProxyChecker/master/am_I_working.txt'
+check_url = 'https://coding.net/u/Katsue/p/check/git/raw/master/working.txt'
+#check_url = 'https://raw.githubusercontent.com/itsuwari/SocksProxyChecker/master/am_I_working.txt'
 
 class ProgressBar:
     def __init__(self, count=0, total=0, width=50):
