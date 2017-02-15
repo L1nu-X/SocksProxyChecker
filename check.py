@@ -3,7 +3,7 @@ import requests, sys, time
 
 #check_url = 'https://gitlab.com/itsuwari/check_txt/raw/master/Works.txt'
 #check_url = 'https://raw.githubusercontent.com/itsuwari/SocksProxyChecker/master/am_I_working.txt'
-check_url = 'https://developer.akamai.com/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css'
+check_url = 'http://developer.akamai.com/assets/themes/bootstrap-3/bootstrap/css/bootstrap.min.css'
 
 class ProgressBar:
     def __init__(self, count=0, total=0, width=50):
@@ -25,7 +25,7 @@ class ProgressBar:
 
 
 
-def test_proxy(proxies, country_filter=False, isp_filter=False, speed_filter=2, timeout=10, speed_timeout=3):
+def test_proxy(proxies, country_filter=None, isp_filter=None, speed_filter=2, timeout=10, speed_timeout=3):
     bar = ProgressBar(total=len(proxies))
     working = []
     for proxy in proxies:
@@ -39,18 +39,21 @@ def test_proxy(proxies, country_filter=False, isp_filter=False, speed_filter=2, 
             isp = ip_info['isp']
             bar.log('Country: %s ISP: %s' % (country_code, isp))
             time.sleep(1)
-            if country_filter:
+            if not country_filter is None:
                 if not country_code in country_filter:
                     continue
-            if isp_filter:
+            if not isp_filter is None:
                 if not isp in isp_filter:
                     continue
             if requests.get(check_url, timeout=timeout, proxies=socks).elapsed.total_seconds() <= 2:
-                open(out_file, 'a').write('%s\n' % proxy)
                 working.append(proxy)
                 bar.log('%s is working!' % proxy)
-                speed = speedtest([proxy], speed_filter, timeout=speed_timeout)
-                open(out_file, 'a').write('%s\n' % str(speed))
+                speed = speedtest([proxy], timeout=speed_timeout)
+                if speed <= speed_filter:
+                    bar.log('Low speed')
+                    bar.move(1)
+                    continue
+                open(out_file, 'a').write('%s\n' % proxy)
                 bar.move(1)
         except Exception:
             bar.log('Oops, not working')
@@ -58,7 +61,7 @@ def test_proxy(proxies, country_filter=False, isp_filter=False, speed_filter=2, 
 
     return working
 
-def speedtest(proxies, filter=5, file='http://repos.lax-noc.com/speedtests/10mb.bin', timeout=10):
+def speedtest(proxies, file='http://repos.lax-noc.com/speedtests/10mb.bin', timeout=10):
     bar = ProgressBar(total=len(proxies))
     for proxy in proxies:
         socks = {
@@ -96,4 +99,4 @@ with open(in_file) as f:
 proxies = [x.strip() for x in proxies]
 
 us_isp = ['Google', 'Apple', 'Akamai Technologies', 'Amazon Technologies', 'Microsoft Corp']
-test_proxy(proxies, ['US'], speed_filter=50, speed_timeout=2)
+test_proxy(proxies, country_filter=['US'], speed_filter=30, speed_timeout=2)
