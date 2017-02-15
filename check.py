@@ -1,6 +1,6 @@
 import requests, sys, time
 
-check_url = 'https://coding.net/u/Katsue/p/check/git/raw/master/working.txt'
+check_url = 'https://gitlab.com/itsuwari/check_txt/raw/master/Works.txt'
 #check_url = 'https://raw.githubusercontent.com/itsuwari/SocksProxyChecker/master/am_I_working.txt'
 
 class ProgressBar:
